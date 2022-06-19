@@ -24,6 +24,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     })->name('dashboard');
 });
 
+// role permission route
 Route::middleware('auth')->prefix('/admin')->group(function(){
     Route::resource('/roles', RolesController::class);
 });

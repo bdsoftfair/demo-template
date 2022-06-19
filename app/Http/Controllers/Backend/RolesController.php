@@ -29,9 +29,9 @@ class RolesController extends Controller
      */
     public function create()
     {
-        $permissions = Permission::all();
+        $all_permissions = Permission::all();
         $permission_groups = User::getpermissionGroup();
-        return view('backend.roles.create', compact('permissions', 'permission_groups'));
+        return view('backend.roles.create', compact('all_permissions', 'permission_groups'));
     }
 
     /**
@@ -84,9 +84,9 @@ class RolesController extends Controller
     public function edit($id)
     {
         $role = Role::findById($id);
-        $permissions = Permission::all();
+        $all_permissions = Permission::all();
         $permission_groups = User::getpermissionGroup();
-        return view('backend.roles.edit', compact('permissions', 'permission_groups', 'role'));
+        return view('backend.roles.edit', compact('all_permissions', 'permission_groups', 'role'));
     }
 
     /**
@@ -100,7 +100,7 @@ class RolesController extends Controller
     {
         // validation data
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|unique:roles,name,'.$id
         ],[
             'name.required' => 'Please Give Role Name',
         ]);
@@ -110,6 +110,8 @@ class RolesController extends Controller
         $permissions = $request->input('permissions');
         
         if(!empty($permissions)){
+            $role->name = $request->name;
+            $role->save();
             $role->syncPermissions($permissions);
         }
 
@@ -128,6 +130,17 @@ class RolesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $role = Role::findById($id);
+
+        $role = Role::find($id);
+        if(!is_null($role)){
+            $role->delete();
+        }
+
+        $notification = array(
+            'message'   => 'Role Deleted Successfully',
+            'alert-type'    => 'success',
+        );
+        return redirect()->route('roles.index')->with($notification);
     }
 }

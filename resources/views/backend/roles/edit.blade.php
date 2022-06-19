@@ -44,14 +44,14 @@
                                                     <h5>Give Permission <span class="text-danger">*</span></h5>
                                                     <!---All Permission Check--->
                                                     <div class="checkbox">
-                                                        <input type="checkbox" id="checkPermissionAll" value="1" {{ (App\Models\User::roleHasPermissions($role, $permissions)) ? 'checked' : '' }}>
+                                                        <input type="checkbox" id="checkPermissionAll" value="1" {{ (App\Models\User::roleHasPermissions($role, $all_permissions)) ? 'checked' : '' }}>
                                                         <label for="checkPermissionAll">All</label>
                                                     </div>
                                                     <hr>
 
                                                     @php $i = 1; @endphp
                                                     @foreach ($permission_groups as $group)
-                                                        <div class="row">
+                                                        <div class="row mb-3">
 
                                                             @php
                                                                 $permissions = App\Models\User::getpermissionsByGroupName($group->name);
@@ -68,7 +68,7 @@
 
                                                                @foreach ($permissions as $permission)
                                                                     <div class="checkbox">
-                                                                        <input type="checkbox" name="permissions[]" {{ ($role->hasPermissionTo($permission->name)) ? 'checked' : "" }} id="Checkbox_{{ $permission->id }}" value="{{ $permission->name }}">
+                                                                        <input type="checkbox" onclick="checkSinglePermission('role-{{ $i }}-management-checkbox', '{{ $i }}Management', {{ count($permissions) }})" name="permissions[]" {{ ($role->hasPermissionTo($permission->name)) ? 'checked' : "" }} id="Checkbox_{{ $permission->id }}" value="{{ $permission->name }}">
                                                                         <label for="Checkbox_{{ $permission->id }}">{{ $permission->name }}</label>
                                                                     </div>
                                                                     @php $j++ @endphp

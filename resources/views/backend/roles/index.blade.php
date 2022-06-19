@@ -23,8 +23,9 @@
                                     <thead>
                                         <tr>
                                             <th width="5%">SL</th>
-                                            <th>Name</th>
-                                            <th width="25%">Action</th>
+                                            <th width="10%">Role Name</th>
+                                            <th>Permission</th>
+                                            <th width="20%">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -33,8 +34,19 @@
                                             <td>{{ $key+1 }}</td>
                                             <td>{{ $role->name }}</td>
                                             <td>
+                                                @foreach ($role->permissions as $perm)
+                                                    <span class="badge badge-primary mr-2 mb-2">{{ $perm->name }}</span>   
+                                                @endforeach
+                                            </td>
+                                            <td>
                                                 <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-info">Edit</a>
-                                                <a href="" class="btn btn-danger" id="delete">Delete</a>
+                                                <a href="{{ route('roles.destroy',$role->id) }}" class="btn btn-danger"  onclick=" event.preventDefault(); document.getElementById('delete-form-{{ $role->id }}').submit();">
+                                                    Delete
+                                                </a>
+                                                <form id="delete-form-{{ $role->id }}" action="{{ route('roles.destroy',$role->id) }}" method="POST" style="display: none">
+                                                    @method('DELETE')
+                                                    @csrf
+                                                </form>
                                             </td>
                                         </tr>
                                         @endforeach
