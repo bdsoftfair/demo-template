@@ -97,15 +97,22 @@
                             <a class="dropdown-item" href="#"><i class="ti-wallet text-muted mr-2"></i> My Wallet</a>
                             <a class="dropdown-item" href="#"><i class="ti-settings text-muted mr-2"></i> Settings</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#"><i class="ti-lock text-muted mr-2"></i> Logout</a>
+                            {{-- <a class="dropdown-item" href="{{ route('logout') }}"> Logout</a> --}}
+                            <a class="dropdown-item" href="{{ route('admin.logout.submit') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="ti-lock text-muted mr-2"></i>
+                                Logout
+                            </a>
+                            <form id="logout-form" action="{{ route('admin.logout.submit') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
                         </li>
                     </ul>
                 </li>
-                <li>
+                {{-- <li>
                     <a href="#" data-toggle="control-sidebar" title="Setting" class="waves-effect waves-light">
                         <i class="ti-settings"></i>
                     </a>
-                </li>
+                </li> --}}
             </ul>
         </div>
     </nav>

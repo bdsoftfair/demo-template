@@ -6,11 +6,20 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 
 class RolesController extends Controller
 {
+    public $user;
+    public function __construct()
+    {
+        $this->middleware(function($request, $next){
+            $this->user = Auth::guard('admin')->user();
+            return $next($request);
+        });
+    }
     /**
      * Display a listing of the resource.
      *
@@ -18,6 +27,10 @@ class RolesController extends Controller
      */
     public function index()
     {
+        if(is_null($this->user) || !$this->user->can('role.index')){
+            abort(403, 'Sorry!! Unauthorized Access to show list');
+        }
+
         $roles = Role::all();
         return view('backend.roles.index', compact('roles'));
     }
@@ -29,6 +42,11 @@ class RolesController extends Controller
      */
     public function create()
     {
+
+        if(is_null($this->user) || !$this->user->can('role.create')){
+            abort(403, 'Unauthorized Access to create any role');
+        }
+
         $all_permissions = Permission::all();
         $permission_groups = User::getpermissionGroup();
         return view('backend.roles.create', compact('all_permissions', 'permission_groups'));
@@ -50,7 +68,7 @@ class RolesController extends Controller
         ]);
 
         //Process Data
-        $role = Role::create(['name' => $request->name]);
+        $role = Role::create(['name' => $request->name, 'guard_name' => 'admin']);
         $permissions = $request->input('permissions');
         
         if(!empty($permissions)){
@@ -83,7 +101,12 @@ class RolesController extends Controller
      */
     public function edit($id)
     {
-        $role = Role::findById($id);
+        
+        if(is_null($this->user) || !$this->user->can('role.edit')){
+            abort(403, 'Unauthorized Access');
+        }
+
+        $role = Role::findById($id, 'admin');
         $all_permissions = Permission::all();
         $permission_groups = User::getpermissionGroup();
         return view('backend.roles.edit', compact('all_permissions', 'permission_groups', 'role'));
@@ -98,6 +121,11 @@ class RolesController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
+        if(is_null($this->user) || !$this->user->can('role.update')){
+            abort(403, 'Unauthorized Access');
+        }
+
         // validation data
         $request->validate([
             'name' => 'required|unique:roles,name,'.$id
@@ -106,7 +134,7 @@ class RolesController extends Controller
         ]);
 
         //Process Data
-        $role = Role::findById($id);
+        $role = Role::findById($id, 'admin');
         $permissions = $request->input('permissions');
         
         if(!empty($permissions)){
@@ -130,7 +158,12 @@ class RolesController extends Controller
      */
     public function destroy($id)
     {
-        $role = Role::findById($id);
+        
+        if(is_null($this->user) || !$this->user->can('role.destroy')){
+            abort(403, 'Unauthorized Access');
+        }
+
+        $role = Role::findById($id, 'admin');
 
         $role = Role::find($id);
         if(!is_null($role)){

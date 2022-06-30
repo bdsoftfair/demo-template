@@ -14,7 +14,9 @@
                     <div class="box">
                         <div class="box-header with-border">
                             <h3 class="box-title">Role List</h3>
+                            @if (Auth::guard('admin')->user()->can('role.create'))
                             <a href="{{ route('roles.create') }}" style="float: right;" class="btn btn-rounded btn-success mb-5"> Add Role</a>
+                            @endif
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
@@ -39,7 +41,11 @@
                                                 @endforeach
                                             </td>
                                             <td>
+                                                @if (Auth::guard('admin')->user()->can('role.edit'))
                                                 <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-info">Edit</a>
+                                                @endif
+                                                
+                                                @if (Auth::guard('admin')->user()->can('role.delete'))
                                                 <a href="{{ route('roles.destroy',$role->id) }}" class="btn btn-danger"  onclick=" event.preventDefault(); document.getElementById('delete-form-{{ $role->id }}').submit();">
                                                     Delete
                                                 </a>
@@ -47,6 +53,7 @@
                                                     @method('DELETE')
                                                     @csrf
                                                 </form>
+                                                @endif
                                             </td>
                                         </tr>
                                         @endforeach

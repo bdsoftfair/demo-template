@@ -7,7 +7,7 @@
                     <!-- logo for regular state and mobile devices -->
                     <div class="d-flex align-items-center justify-content-center">
                         <img src="{{ asset('backend/images/logo-dark.png') }}" alt="" />
-                        <h3><b>Multipurpose</b> Admin</h3>
+                        <h3><b>Multipurpose</b> - {{ Auth::guard('admin')->user()->name }}</h3>
                     </div>
                 </a>
             </div>
@@ -31,31 +31,32 @@
                     </span>
                 </a>
                 <ul class="treeview-menu">
+                    @if (Auth::guard('admin')->user()->can('role.index'))
                     <li>
                         <a href="{{ route('roles.index') }}"><i class="ti-more"></i>Role List</a>
                     </li>
+                    @endif
+                    @if (Auth::guard('admin')->user()->can('role.create'))
                     <li>
                         <a href="{{ route('roles.create') }}"><i class="ti-more"></i>Add Role</a>
                     </li>
+                    @endif
                 </ul>
             </li>
 
             <li class="treeview">
                 <a href="#">
-                    <i data-feather="mail"></i> <span>Mailbox</span>
+                    <i data-feather="mail"></i> <span>Admins</span>
                     <span class="pull-right-container">
                         <i class="fa fa-angle-right pull-right"></i>
                     </span>
                 </a>
                 <ul class="treeview-menu">
                     <li>
-                        <a href="mailbox_inbox.html"><i class="ti-more"></i>Inbox</a>
+                        <a href="{{ route('admin.list') }}"><i class="ti-more"></i>Admin List</a>
                     </li>
                     <li>
-                        <a href="mailbox_compose.html"><i class="ti-more"></i>Compose</a>
-                    </li>
-                    <li>
-                        <a href="mailbox_read_mail.html"><i class="ti-more"></i>Read</a>
+                        <a href="{{ route('admin.create') }}"><i class="ti-more"></i>Add Admin</a>
                     </li>
                 </ul>
             </li>
